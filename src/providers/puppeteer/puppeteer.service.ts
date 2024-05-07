@@ -11,6 +11,11 @@ export class PuppeteerService {
 
   // Static
   public static async create() {
-    return new PuppeteerService(await puppeteer.launch());
+    return new PuppeteerService(
+      await puppeteer.launch({
+        executablePath: '/usr/bin/google-chrome',
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      }),
+    );
   }
 }

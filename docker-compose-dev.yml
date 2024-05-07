@@ -7,7 +7,7 @@ services:
     container_name: sound-wire-query-server
     tty: true
     ports:
-      - "${CLIENT_PORT}:3000"
+      - "${CLIENT_PORT}:4000"
     environment:
       - NODE_ENV=development
     env_file:
