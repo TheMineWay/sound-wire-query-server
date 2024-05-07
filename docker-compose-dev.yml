@@ -1,0 +1,16 @@
+version: '3'
+services:
+  sound-wire-server:
+    image: node:22-alpine
+    container_name: sound-wire-query-server
+    tty: true
+    working_dir: /app
+    ports:
+      - "${CLIENT_PORT}:3000"
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    command: ["npm", "run", "start:dev"]
