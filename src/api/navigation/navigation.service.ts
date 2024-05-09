@@ -13,8 +13,7 @@ export class NavigationService {
   async queryByText(textCriteria: string) {
     const scrapper = new YtMusicScrapper(await this.puppeteerService.newPage());
 
-    await scrapper.navigateBySearchText(textCriteria);
-    await scrapper.acceptTerms();
+    await scrapper.navigateBySearchText(textCriteria, { only: 'songs' });
 
     const page = await scrapper.getPage();
 
