@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PuppeteerService } from '../../providers/puppeteer/puppeteer.service';
 import { PUPPETEER_PROVIDER_KEY } from '../../providers/puppeteer/puppeteer.module';
+import { YtMusicScrapper } from '../../services/scrapper/yt-music.scrapper';
 
 @Injectable()
 export class NavigationService {
@@ -8,10 +9,20 @@ export class NavigationService {
     @Inject(PUPPETEER_PROVIDER_KEY)
     private readonly puppeteerService: PuppeteerService,
   ) {}
+
   async queryByText(textCriteria: string) {
-    const page = await this.puppeteerService.newPage();
-    page.goto(
-      `https://music.youtube.com/search?q=${encodeURIComponent(textCriteria)}`,
-    );
+    const scrapper = new YtMusicScrapper(await this.puppeteerService.newPage());
+
+    await scrapper.navigateBySearchText(textCriteria);
+    await scrapper.acceptTerms();
+
+    const page = await scrapper.getPage();
+
+    // For testing, save content and return
+    const r = page.content();
+
+    await page.close();
+
+    return r;
   }
 }
