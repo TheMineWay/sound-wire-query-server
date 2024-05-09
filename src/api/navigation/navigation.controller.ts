@@ -6,8 +6,8 @@ import { QueryByTextDTO } from '../../dtos/navigation/query-by-text.dto';
 export class NavigationController {
   constructor(private readonly navigationService: NavigationService) {}
 
-  @Get('text')
-  async queryByText(@Query() { text }: QueryByTextDTO) {
-    return await this.navigationService.queryByText(text);
+  @Get('songs')
+  async querySongsByText(@Query() { text }: QueryByTextDTO) {
+    return await this.navigationService.querySongsByText(text);
   }
 }
