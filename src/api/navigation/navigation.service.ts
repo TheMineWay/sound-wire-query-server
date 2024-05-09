@@ -16,30 +16,35 @@ export class NavigationService {
     await scrapper.navigateBySearchText(textCriteria, { only: 'songs' });
 
     const page = await scrapper.getPage();
+
     const songsContainer = await page.$(
-      'ytmusic-shelf-renderer > div#contents > ytmusic-responsive-list-item-renderer',
+      'ytmusic-shelf-renderer > div#contents',
     );
 
     const songs = songsContainer.evaluate(async (container) => {
-      const name = container.querySelector('div.title-column a');
-      const artist = container.querySelectorAll(
-        'div.secondary-flex-columns a.yt-simple-endpoint',
-      );
-      return {
-        coverUrl: container
-          .querySelector('ytmusic-thumbnail-renderer > yt-img-shadow > img')
-          ?.getAttribute('src'),
-        name: name?.textContent,
-        id: name.getAttribute('href').split('=')[1],
-        album: {
-          name: artist[1].textContent,
-          id: artist[1].getAttribute('href').split('/')[1],
-        },
-        artist: {
-          name: artist[0].textContent,
-          id: artist[0].getAttribute('href').split('/')[1],
-        },
-      };
+      return Object.values(
+        container.querySelectorAll('ytmusic-responsive-list-item-renderer'),
+      ).map((container) => {
+        const name = container.querySelector('div.title-column a');
+        const artist = container.querySelectorAll(
+          'div.secondary-flex-columns a.yt-simple-endpoint',
+        );
+        return {
+          coverUrl: container
+            .querySelector('ytmusic-thumbnail-renderer > yt-img-shadow > img')
+            ?.getAttribute('src'),
+          name: name?.textContent,
+          id: name.getAttribute('href').split('=')[1],
+          album: {
+            name: artist[1].textContent,
+            id: artist[1].getAttribute('href').split('/')[1],
+          },
+          artist: {
+            name: artist[0].textContent,
+            id: artist[0].getAttribute('href').split('/')[1],
+          },
+        };
+      });
     });
 
     return songs;
